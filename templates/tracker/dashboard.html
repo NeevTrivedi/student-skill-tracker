@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - Student Skill Tracker{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="card p-4 mb-4 border-0 text-white" style="background: linear-gradient(135deg, #1e40af, #3b82f6);">
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <h3 class="fw-bold">Level Up Your Capabilities! 🚀</h3>
+            <p class="mb-0 text-light opacity-75">
+                Keep up the momentum. You have completed <strong>{{ completed_skills }}</strong> skills and have <strong>{{ in_progress_skills }}</strong> actively progressing.
+            </p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a href="{% url 'skill_add' %}" class="btn btn-light text-primary fw-semibold px-4 py-2">
+                <i class="fa-solid fa-plus me-1"></i> Add New Skill
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Metrics Cards Row -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card p-3 metric-card shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Total Skills</div>
+                    <div class="fs-3 fw-bold">{{ total_skills }}</div>
+                </div>
+                <div class="p-3 bg-primary bg-opacity-10 rounded text-primary"><i class="fa-solid fa-layer-group fs-4"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm border-left" style="border-left: 4px solid #f59e0b;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Learning (In Progress)</div>
+                    <div class="fs-3 fw-bold">{{ in_progress_skills }}</div>
+                </div>
+                <div class="p-3 bg-warning bg-opacity-10 rounded text-warning"><i class="fa-solid fa-spinner fs-4"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm" style="border-left: 4px solid #10b981;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Completed Skills</div>
+                    <div class="fs-3 fw-bold">{{ completed_skills }}</div>
+                </div>
+                <div class="p-3 bg-success bg-opacity-10 rounded text-success"><i class="fa-solid fa-circle-check fs-4"></i></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3 shadow-sm" style="border-left: 4px solid #6366f1;">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-muted small fw-medium">Average Progress</div>
+                    <div class="fs-3 fw-bold">{{ avg_progress }}%</div>
+                </div>
+                <div class="p-3 bg-indigo bg-opacity-10 rounded text-primary"><i class="fa-solid fa-chart-simple fs-4"></i></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Active Learning Goals -->
+    <div class="col-lg-6">
+        <div class="card p-3 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold mb-0">Upcoming Learning Goals</h6>
+                <a href="{% url 'goals' %}" class="small text-decoration-none">View All</a>
+            </div>
+            {% if pending_goals %}
+                <ul class="list-group list-group-flush">
+                    {% for goal in pending_goals %}
+                    <li class="list-group-item px-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-secondary me-2">{{ goal.goal_type }}</span>
+                            <span class="fw-medium">{{ goal.title }}</span>
+                        </div>
+                        <span class="small text-muted"><i class="fa-regular fa-clock me-1"></i>{{ goal.target_date }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted my-auto text-center py-4">No pending goals. Stay organized by adding some!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Activities Timeline -->
+    <div class="col-lg-6">
+        <div class="card p-3 h-100">
+            <h6 class="fw-bold mb-3">Recent Activity</h6>
+            {% if recent_activities %}
+                <ul class="list-unstyled mb-0">
+                    {% for act in recent_activities %}
+                    <li class="d-flex gap-3 mb-3">
+                        <div class="text-primary"><i class="fa-solid fa-bolt"></i></div>
+                        <div>
+                            <p class="mb-0 small fw-medium">{{ act.action_text }}</p>
+                            <span class="text-muted" style="font-size: 0.75rem;">{{ act.created_at|timesince }} ago</span>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted my-auto text-center py-4">No recent activity logged yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

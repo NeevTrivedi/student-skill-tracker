@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Student Profile - Student Skill Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card p-4 shadow-sm">
+            <div class="d-flex align-items-center gap-3 pb-3 mb-4 border-bottom">
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-3" style="width: 64px; height: 64px;">
+                    {{ request.user.first_name|first|default:request.user.username|first|upper }}
+                </div>
+                <div>
+                    <h5 class="fw-bold mb-0">{{ request.user.get_full_name|default:request.user.username }}</h5>
+                    <span class="text-muted small">{{ request.user.email }}</span>
+                </div>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <h6 class="fw-bold text-primary mb-3">Basic Info</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">First Name</label>
+                        {{ u_form.first_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Last Name</label>
+                        {{ u_form.last_name }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Email</label>
+                        {{ u_form.email }}
+                    </div>
+                </div>
+
+                <h6 class="fw-bold text-primary mb-3">Academic Info</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">College / University</label>
+                        {{ p_form.college }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Degree / Course</label>
+                        {{ p_form.course }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Year of Study</label>
+                        {{ p_form.year_of_study }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Bio / Goals Summary</label>
+                        {{ p_form.bio }}
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary px-4">Update Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

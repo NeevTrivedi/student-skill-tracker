@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} - Student Skill Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm p-4">
+            <h4 class="fw-bold mb-3">{{ title }}</h4>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Skill Name</label>
+                        {{ form.name }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Category</label>
+                        {{ form.category }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Proficiency Level</label>
+                        {{ form.proficiency }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Current Progress Percentage (0 - 100)</label>
+                        {{ form.progress_percentage }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Start Date</label>
+                        {{ form.start_date }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Target Completion Date</label>
+                        {{ form.target_date }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-semibold">Notes & Study Roadmap</label>
+                        {{ form.notes }}
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <a href="{% url 'skills_list' %}" class="btn btn-outline-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary px-4">Save Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

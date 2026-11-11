@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Skill Tracker{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --primary-accent: #2563eb;
+            --primary-accent-light: #dbeafe;
+            --body-bg: #f8fafc;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--body-bg);
+            color: #334155;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            min-height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link {
+            color: #94a3b8;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 4px 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.2s ease-in-out;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: #ffffff;
+            background-color: var(--sidebar-hover);
+        }
+        .sidebar .nav-link.active {
+            background-color: var(--primary-accent);
+        }
+        .main-wrapper {
+            margin-left: 260px;
+            padding: 24px 32px;
+        }
+        @media (max-width: 992px) {
+            .sidebar { margin-left: -260px; }
+            .sidebar.show { margin-left: 0; }
+            .main-wrapper { margin-left: 0; padding: 16px; }
+        }
+        .card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            background: #ffffff;
+        }
+        .metric-card {
+            border-left: 4px solid var(--primary-accent);
+        }
+    </style>
+</head>
+<body>
+
+{% if user.is_authenticated %}
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+    <div class="px-4 py-4 d-flex align-items-center gap-2 border-bottom border-secondary border-opacity-25">
+        <i class="fa-solid fa-graduation-cap fs-4 text-primary"></i>
+        <h5 class="text-white mb-0 fw-bold tracking-wide">SkillTracker</h5>
+    </div>
+
+    <div class="mt-4">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if 'skill' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'skills_list' %}">
+                    <i class="fa-solid fa-code"></i> My Skills
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'goals' %}active{% endif %}" href="{% url 'goals' %}">
+                    <i class="fa-solid fa-bullseye"></i> Learning Goals
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'analytics' %}active{% endif %}" href="{% url 'analytics' %}">
+                    <i class="fa-solid fa-chart-line"></i> Analytics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'profile' %}">
+                    <i class="fa-solid fa-user-gear"></i> My Profile
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <a class="nav-link text-danger" href="{% url 'logout' %}">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+    <!-- Topbar -->
+    <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <button class="btn btn-outline-secondary d-lg-none me-2" onclick="document.getElementById('sidebar').classList.toggle('show')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <span class="text-muted small">Welcome back,</span>
+            <h4 class="fw-bold mb-0 text-dark">{{ request.user.first_name|default:request.user.username }}</h4>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-light text-primary border px-3 py-2 rounded-pill">
+                <i class="fa-solid fa-university me-1"></i> {{ request.user.profile.college|default:"Student" }}
+            </span>
+        </div>
+    </header>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block content %}{% endblock %}
+</div>
+
+{% else %}
+    <!-- Public Layout (For Login/Register) -->
+    <div class="container py-5">
+        {% block auth_content %}{% endblock %}
+    </div>
+{% endif %}
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ChartJS -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
